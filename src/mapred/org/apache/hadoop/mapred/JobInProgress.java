@@ -62,6 +62,7 @@ import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
+import org.apache.hadoop.util.HostGroupLabelsFileReader;
 import org.apache.hadoop.util.StringUtils;
 
 /*************************************************************
@@ -251,6 +252,7 @@ public class JobInProgress {
   private String submitHostAddress;
   private String user;
   private String historyFile = "";
+  private HostGroupLabelsFileReader hostGroupLabelsFileReader;  
   
   // Per-job counters
   public static enum Counter { 
@@ -476,6 +478,22 @@ public class JobInProgress {
       // register job's tokens for renewal
       DelegationTokenRenewal.registerDelegationTokensForRenewal(
           jobInfo.getJobID(), ts, jobtracker.getConf());
+
+      // Read the map.hosts/reduce.hosts files to place map/reduce tasks.
+      this.hostGroupLabelsFileReader = new HostGroupLabelsFileReader();
+      final String hostGroupLabelsFile = conf.get("mapred.hostgroup.labels.file","");
+      hostGroupLabelsFileReader.setHostGroupLabelsFile(hostGroupLabelsFile);
+      if (!hostGroupLabelsFile.equals("")) {
+          final String computeHostGroupLabel = conf.get("mapred.compute.hostgroup.label", "Compute-Nodes");
+          final String storageHostGroupLabel = conf.get("mapred.storage.hostgroup.label", "Storage-Nodes");
+          final boolean mapPushDown = conf.getBoolean("mapred.map.pushdown", false);
+          String mapHostGroupLabel =  conf.get("mapred.map.hostgroup.label", computeHostGroupLabel);
+          mapHostGroupLabel =  mapPushDown ? storageHostGroupLabel : mapHostGroupLabel;
+          final String reduceHostGroupLabel = conf.get("mapred.reduce.hostgroup.label", computeHostGroupLabel);
+          hostGroupLabelsFileReader.setMapReduceHostGroupLabels(mapHostGroupLabel, reduceHostGroupLabel);	  
+
+          hostGroupLabelsFileReader.refresh();
+      }
       
       // Check task limits
       checkTaskLimits();
@@ -1434,7 +1452,27 @@ public class JobInProgress {
       throws IOException {
     return obtainNewMapTaskCommon(tts, clusterSize, numUniqueHosts, 
         NON_LOCAL_CACHE_LEVEL);
+  }  
+  
+  /**
+   * Return if the specified tasktracker is in the map hosts list, 
+   * if one was configured.  If none was configured, then this 
+   * returns true.
+   */
+  public boolean inMapHostsList(TaskTrackerStatus status) {
+    Set<String> mapHostsList = hostGroupLabelsFileReader.getMapHostGroup();
+    return (mapHostsList == null || mapHostsList.isEmpty() || mapHostsList.contains(status.getHost()));
   }
+
+  /**
+   * Return if the specified tasktracker is in the reduce hosts list, 
+   * if one was configured.  If none was configured, then this 
+   * returns true.
+   */
+  public boolean inReduceHostsList(TaskTrackerStatus status) {
+    Set<String> reduceHostsList = hostGroupLabelsFileReader.getReduceHostGroup();
+    return (reduceHostsList == null || reduceHostsList.isEmpty() || reduceHostsList.contains(status.getHost()));
+  }  
   
   public void schedulingOpportunity() {
     ++numSchedulingOpportunities;

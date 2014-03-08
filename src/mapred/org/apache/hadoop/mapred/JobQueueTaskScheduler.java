@@ -170,6 +170,12 @@ class JobQueueTaskScheduler extends TaskScheduler {
             continue;
           }
 
+          // Check if the map tasks can be placed on this tracker
+          if (!job.inMapHostsList(taskTrackerStatus)) {
+        	  LOG.info("+++VM+++ : Scheduler :" + " Skipping ->" + taskTrackerStatus.getHost() + "<- for Maps!");
+        	break scheduleMaps;    	
+          }
+
           Task t = null;
           
           // Try to schedule a Map task with locality between node-local 
@@ -231,6 +237,12 @@ class JobQueueTaskScheduler extends TaskScheduler {
             continue;
           }
 
+          // Check if the reduce tasks can be placed on this tracker
+          if (!job.inReduceHostsList(taskTrackerStatus)) {
+        	LOG.info("+++VM+++ : Scheduler :" + " Skipping ->" + taskTrackerStatus.getHost() + "<- for Reduces");
+        	break;    	
+          }          
+          
           Task t = 
             job.obtainNewReduceTask(taskTrackerStatus, numTaskTrackers, 
                                     taskTrackerManager.getNumberOfUniqueHosts()
