@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+This file defines the labels for node groups that can be used
+in specifying where the map and reduce tasks can run.   
+Name for this file can be specified with the property
+"mapred.hostgroups.labels.file" in mapred-site.xml file.
+The label for host group where map tasks are run is specified 
+by the property "mapred.map.hostgroup.label".
+The label for host group where reduce tasks are run is specified 
+by the property "mapred.reduce.hostgroup.label".
+ 
+-->
+
+<!-- Top level  -->
+<CBD-NodeGroups>
+
+<!--  Compute Nodes Group -->
+  <NodeGroupLabel label="CBD-Compute-Nodes">
+    <Node>r01wn01</Node>
+    <Node>r01wn02</Node>
+    <Node>r01wn03</Node>
+    <Node>r01wn04</Node>
+    <Node>localhost</Node>
+  </NodeGroupLabel>
+
+<!--  Storage Nodes Group -->
+  <NodeGroupLabel label="CBD-Storage-Nodes">
+    <Node>r01wn05</Node>
+    <Node>r01wn06</Node>
+    <Node>r01wn07</Node>
+    <Node>r01wn08</Node>
+    <Node>r01wn09</Node>
+    <Node>r01wn10</Node>
+    <Node>localhost</Node>
+  </NodeGroupLabel>
+
+<!--  Map Compute Nodes Group -->
+  <NodeGroupLabel label="Map-Compute-Nodes">
+    <Node>r01wn01</Node>
+    <Node>r01wn02</Node>
+  </NodeGroupLabel>
+
+<!--  Reduce Compute Nodes Group -->
+  <NodeGroupLabel label="Reduce-Compute-Nodes">
+    <Node>r01wn03</Node>
+    <Node>r01wn04</Node>
+  </NodeGroupLabel>
+
+<!--  Node Group Label 1 -->
+  <NodeGroupLabel label="Compute-Nodes-Moonshot-Borman">
+    <Node>r01wn01</Node>
+    <Node>r01wn02</Node>
+  </NodeGroupLabel>
+
+<!-- Node Group Label 2 -->  
+  <NodeGroupLabel label="Compute-Nodes-Moonshot-Scott">
+    <Node>r01wn03</Node>
+    <Node>r01wn04</Node>
+  </NodeGroupLabel>
+
+<!-- Node Group Label 3 -->    
+  <NodeGroupLabel label="Storage-Nodes-Argos-1x60">
+    <Node>r01wn05</Node>
+    <Node>r01wn06</Node>
+  </NodeGroupLabel>
+
+<!-- Node Group Label 4 -->    
+  <NodeGroupLabel label="Storage-Nodes-Argos-2x25">
+    <Node>r01wn07</Node>
+    <Node>r01wn08</Node>
+  </NodeGroupLabel>
+
+<!-- Node Group Label 5 -->    
+  <NodeGroupLabel label="Storage-Nodes-Argos-3x15">
+    <Node>r01wn09</Node>
+    <Node>r01wn10</Node>
+  </NodeGroupLabel>
+
+</CBD-NodeGroups>

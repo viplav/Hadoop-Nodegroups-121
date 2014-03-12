@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+
+<property>
+  <name>mapred.job.tracker</name>
+  <value>localhost:8021</value>
+</property>
+
+<property>
+  <name>mapred.hostgroup.lables.file</name>
+  <value>cbd-nodegroup-labels.xml</value>
+</property>
+
+<property>
+  <name>mapred.map.pushdown</name>
+  <value>true</value>
+</property>
+
+<property>
+  <name>mapred.map.hostgroup.label</name>
+  <value>map-compute-nodes</value>
+</property>
+
+<property>
+  <name>mapred.reduce.hostgroup.label</name>
+  <value>reduce-compute-nodes</value>
+</property>
+
+</configuration>
